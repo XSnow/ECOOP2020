@@ -1,0 +1,462 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% METAVARIABLES
+
+metavar var, x , y ::= {{ repr-locally-nameless }}
+
+metavar i, l ::= {{ coq nat }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% GRAMMAR (LNgen portion)
+
+grammar
+
+typ, A {{ tex A }}, B {{ tex B }}, C {{ tex C }}, D {{ tex D }}, char {{ tex \mathsf{Char} }}, bool {{ tex \mathsf{Bool} }} :: 't_' ::= {{ com types }}
+  | int            ::  :: int     {{ com int }}
+  | Top            ::  :: top     {{ com top }}
+  | A -> B         ::  :: arrow   {{ com function types }}
+  | A & B          ::  :: and     {{ com intersection }}
+  | ( A )          :: S:: paren   {{ coq [[A]] }}
+
+
+exp, e {{ tex e }}, v {{ tex v }}, one_e {{ tex 1 }}, two_e {{ tex 2 }} :: 'e_'     ::=       {{ com expressions }}
+  | x              ::  :: var     {{ com variables }}
+  | T              ::  :: top     {{ com top }}
+  | i              ::  :: lit     {{ com lit }}
+  | \ x : A . e : B
+                   ::  :: abs     (+ bind x in e +)
+                                  {{ com abstractions }}
+	                          {{ tex [[\]][[x]][[:]][[A]].\,[[e]][[:]][[D]] }}
+  | fix x . e : A  ::  :: fixpoint
+                                  (+ bind x in e +)
+                                  {{ com fixpoint }}
+                                  {{ tex [[fix]][[x]].\,[[e]][[:]][[A]] }}
+  | e1 e2          ::  :: app     {{ com applications }}
+  | e1 ,, e2       ::  :: merge   {{ com merge }}
+  | e : A          ::  :: anno    {{ com annotation }}
+  | e1 [ x ~> e2 ] :: M:: subst   {{ coq (open_exp_wrt_exp [[x e1]][[e2]]) }}
+  | ( e )          :: S:: paren   {{ coq ([[e]]) }}
+
+
+substitutions
+  single exp x   :: subst
+
+
+freevars
+  exp x      :: fv
+
+
+parsing
+  t_arrow <= t_and
+  t_arrow right t_arrow
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% GRAMMAR  (non LNgen portion)
+
+grammar
+
+ctx, G {{ tex \Gamma }} :: 'ctx_' ::= {{ com typing context }} {{ coq list ( atom * typ ) }}
+  | []           ::  :: empty      {{ coq nil }}
+                                   {{ tex \cdot }}
+                                   {{ com empty context }}
+  | G , x : A    ::  :: cons       {{ coq (cons ([[x]],[[A]]) [[G]]) }}
+                                   {{ com assumption }}
+
+st :: 'st_' ::=  {{ com input type or projection label }} 
+  | A            ::  :: ty
+%  | l            ::  :: la
+   
+ls  {{ tex \mathcal{L} }} , fs {{ tex \mathcal{L} }} :: 'ls_' ::= {{ com algorithmic subtyping queue and application context}} {{ coq list st }} 
+  | []           ::  :: empty      {{ coq nil }}
+                                   {{ tex \cdot }}
+  | ls , st      ::  :: cons1      {{ coq ([[ls]] ++ (cons [[st]] nil)) }}
+  | st , ls      ::  :: cons2      {{ coq (cons [[st]] [[ls]]) }}
+  | ( ls )       :: S:: paren      {{ coq 0 }}
+
+
+terminals :: 'terminals_' ::=
+  | \            ::  :: lambda     {{ tex \lambda }}
+  | ~>           ::  :: subst      {{ tex \mapsto }}
+  | ->           ::  :: arrow      {{ tex \rightarrow }}
+  | ~->          ::  :: sarrow     {{ tex \rightsquigarrow }}
+  | |->          ::  :: red        {{ tex \longmapsto }}
+  | |-           ::  :: turnstile  {{ tex \vdash }}
+  | |=           ::  :: dash2      {{ tex \models }}
+  | T            ::  :: t          {{ tex \top }}
+  | Top          ::  :: top        {{ tex \mathsf{Top}  }}
+  | int          ::  :: int        {{ tex \mathsf{Int}  }}
+  | ,,           ::  :: Merge      {{ tex \,,,\, }}
+  | &            ::  :: And        {{ tex \, \& \, }}
+  | :            ::  :: Typ        {{ tex : }}
+  | in           ::  :: in         {{ tex \in }}
+  | ;            ::  :: ctxAnd     {{ tex ; }}
+  | ordinary     ::  :: ordinary   {{ tex \mathsf{basic} }}
+  | topLike      ::  :: topLike    {{ tex \mathsf{TOPLIKE} }}
+  | <*>          ::  :: disjointSpec    {{ tex * }}
+  | **           ::  :: disjoint        {{ tex ** }}
+  | *i           ::  :: icfpdisjoint    {{ tex *i }}
+  | *ax          ::  :: icfpdisjointax  {{ tex *ax }}
+  | ~            ::  :: consistencySpec {{ tex \approx }}
+  | ~~           ::  :: consistent {{ tex \approx\approx }}
+  | <            ::  :: val2exprl  {{ tex \langle}}
+  | >            ::  :: val2exprr  {{ tex \rangle}}
+  | topl         ::  :: topl       {{ tex \rceil }}
+  | topr         ::  :: topr       {{ tex \lceil }}
+  | fix          ::  :: fixpoint   {{ tex \masthsf{fix} }}
+
+formula :: 'formula_' ::=
+  | judgement                ::   :: judgement
+  | not formula              :: M :: not
+    {{ tex \neg [[formula]] }}
+    {{ coq not ([[formula]]) }}
+  | ( formula )              :: M :: brackets
+    {{ tex ([[formula]]\!) }}  
+    {{ coq [[formula]] }}
+  | uniq G                   ::   :: uniqG
+    {{ coq uniq [[G]] }}
+    {{ tex }}
+  | x : A in G               ::   :: inG
+    {{ coq binds [[x]][[A]][[G]] }}
+  | x notin fv e             ::   :: fresh
+    {{ coq [[x]] \notin fv[[e]] }}
+  | x notin dom G            ::   :: notInGx
+    {{ coq ~ AtomSetImpl.In [[x]] (dom [[G]]) }}
+    {{ tex [[x]] \notin [[G]] }}
+  | A <*> B                  :: M :: disjointSpec
+    {{ coq disjointSpec A B }}
+  | v1 ~ v2                  :: M :: consistencySpec
+    {{ coq consistencySpec v1 v2 }}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+defns
+Values :: '' ::=
+
+defn
+value e ::  :: value :: value_ {{ com Values }} {{ tex }}
+by
+
+
+---------------------- :: unit
+value T
+
+
+---------------------- :: lit
+value i
+
+
+--------------------------------- :: anno
+value \x : A . e : B
+
+
+value v1
+value v2
+----------------------- :: merge
+value v1 ,, v2
+
+
+defns
+TopLikeType :: '' ::=
+
+defn
+topLike A :: :: topLike :: TL_
+{{ com Top-like Type }}
+{{ tex [[topl]][[A]][[topr]] }}
+by
+
+
+---------------- :: top
+topLike Top 
+
+topLike A
+topLike B
+---------------- :: and
+topLike A & B
+
+topLike B
+---------------- :: arr
+topLike A -> B
+
+defns
+OrdinaryType :: '' ::=
+
+defn
+ordinary A :: :: ord :: O_
+{{ com types that are not intersections }}
+{{ tex [[A]]~[[ordinary]] }}
+by
+
+
+---------------- :: top
+ordinary Top
+
+
+---------------- :: int
+ordinary int
+
+
+---------------- :: arrow
+ordinary A->B
+
+
+
+defns
+Disjoint :: '' ::=
+
+defn A ** B :: :: disjoint    :: 'D_'
+{{ com Disjointness }}
+by
+
+
+--------------- :: topL
+Top ** A
+
+
+------------------ :: topR
+A ** Top
+
+
+A1 ** B
+A2 ** B
+--------------- :: andL
+A1 & A2 ** B
+
+
+A ** B1
+A ** B2
+--------------- :: andR
+A ** B1 & B2
+
+
+---------------------- :: IntArr
+int ** A1 -> A2
+
+
+---------------------- :: ArrInt
+A1 -> A2 ** int
+
+
+A2 ** B2
+---------------------- :: ArrArr
+A1 -> A2 ** B1 -> B2
+
+
+defns
+Subtyping :: '' ::=
+
+defn
+A <: B  :: :: sub :: S_
+{{ com Subtyping }}
+{{ tex [[A]] [[<:]] [[B]] }}
+by
+
+
+---------------------- :: z
+int <: int 
+
+
+--------------- :: top
+A <: Top 
+
+
+Top <: B2
+------------------------ :: toparr
+A <: B1 -> B2
+
+
+B1 <: A1 
+A2 <: B2 
+------------------------ :: arr
+A1 -> A2 <: B1 -> B2
+
+
+A1 <: A3
+------------------------- :: andl1
+A1 & A2 <: A3
+
+
+A2 <: A3
+------------------------- :: andl2
+A1 & A2 <: A3
+
+A1 <: A2
+A1 <: A3
+----------------- :: andr
+A1 <: A2 & A3 
+
+
+
+
+defns
+Semantics :: '' ::=
+
+defn
+v -> A  v'  :: :: TypedReduce :: TReduce_
+{{ tex [[v]]\,[[|->]]_{[[A]]}\,[[v']] }}
+{{ com Typed Reduce for value in Operational Semantics }}
+by
+
+
+---------------- :: lit
+i  ->int  i
+
+
+-------------------------- :: top
+v  ->Top  T
+
+
+topLike B
+------------------------------------ :: toparr
+v  -> A->B  \x:Top . T : B 
+
+
+not topLike D
+C <: A
+B <: D
+------------------------------------------------------ :: arrow
+\ x : A . e : B  ->(C -> D)  \x:A.e : D
+
+
+v1 ->A  v1'
+ordinary A
+--------------------------------- :: mergevl
+v1,,v2 ->A  v1'
+
+
+v2 ->A  v2'
+ordinary A
+--------------------------------- :: mergevr
+v1,,v2 ->A  v2'
+
+
+v ->A v1
+v ->B v2
+--------------------------------------- :: and
+v ->A&B v1,,v2
+
+
+defn
+e -->  e'  :: :: step :: Step_
+{{ tex [[e]]~[[|->]]~[[e']] }}
+{{ com Operational semantics }}
+by
+
+
+value v
+v ->A v'
+-----------------------------------------------------  :: beta
+( \ x : A . e : D )  v   -->  ( e [ x ~> v' ] ) : D
+
+
+value v
+v  ->A  v'
+------------------------------------------ :: annov
+v : A  -->   v'
+
+
+e1  -->   e1'
+------------------------------------- :: appl
+e1 e2  -->  e1' e2 
+
+
+value v1
+e2  -->   e2'
+------------------------------------- :: appr
+v1 e2  -->  v1 e2' 
+
+
+e1  -->  e1'
+------------------------------------------ :: mergel
+e1 ,, e2  -->   e1' ,, e2
+
+
+value v1
+e2  -->  e2'
+------------------------------------------ :: merger
+v1 ,, e2  -->   v1 ,, e2'
+
+
+e  -->  e'
+------------------------------------------ :: anno
+e : A  -->   e' : A
+
+
+-----------------------------------------------------  :: fix
+fix x . e : A  -->   e [ x ~> fix x . e : A ]
+
+
+embed
+{{ coq
+
+Definition disjointSpec A B :=
+  forall C, sub A C -> sub B C -> topLike C.
+  
+Definition consistencySpec v1 v2 :=
+  forall A v1' v2', TypedReduce v1 A v1' -> TypedReduce v2 A v2' -> v1' = v2'.
+}}
+
+
+
+defns
+Typing :: '' ::=
+
+defn
+G |- e : A ::   :: Etyping :: 'Etyp_'
+{{ com Declarative Typing rules for expressions}}
+by
+
+
+uniq G
+----------------- :: top
+G |- T : Top
+
+
+uniq G
+----------------- :: lit
+G |- i : int
+
+
+uniq G
+x : A in G
+-------------------------- :: var
+G |- x : A
+
+
+G , x : A |- e : B
+C <: A
+B <: D
+------------------------------------------- :: abs
+G |- (\x : A . e : D)  : C->D
+
+
+G |- e2 : A
+G |- e1 : A->B
+----------------------- :: app
+G |- e1 e2 : B
+
+
+G |- e1 : A
+G |- e2 : B
+A <*> B
+------------------------------ :: merge
+G |- e1 ,, e2 : A & B
+
+
+G |- e : B
+B <: A
+--------------------- :: anno
+G |- (e:A) : A
+
+
+G , x : A |- e : A
+------------------------------------------- :: fix
+G |- ( fix x . e : A)  : A
+
+
+uniq G
+value v1,,v2
+[] |- v1 : A
+[] |- v2 : B
+v1 ~ v2
+------------------------------ :: mergev
+G |- v1 ,, v2 : A & B
