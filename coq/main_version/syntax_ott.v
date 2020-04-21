@@ -9,7 +9,7 @@ Inductive typ : Set :=  (*r types *)
  | t_arrow (A:typ) (B:typ) (*r function types *)
  | t_and (A:typ) (B:typ) (*r intersection *).
 
-Inductive dexp : Set :=  (*r expressions *)
+Inductive dexp : Set :=  (*r Dunfield and lambdai's expressions *)
  | de_var_b (_:nat) (*r variables *)
  | de_var_f (x:var) (*r variables *)
  | de_top : dexp (*r top *)
@@ -24,7 +24,7 @@ Definition ctx : Set := list ( atom * typ ).
 Inductive st : Set :=  (*r input type or projection label *)
  | st_ty (A:typ).
 
-Inductive exp : Set :=  (*r expressions *)
+Inductive exp : Set :=  (*r our expressions *)
  | e_var_b (_:nat) (*r variables *)
  | e_var_f (x:var) (*r variables *)
  | e_top : exp (*r top *)

@@ -10,7 +10,7 @@
 
 grammar
 
-dexp, ee {{ tex E }}, vv {{ tex V }}, one_ee {{ tex 1 }}, two_ee {{ tex 2 }} :: 'de_'     ::=       {{ com expressions }}
+dexp, ee {{ tex E }}, vv {{ tex V }}, one_ee {{ tex 1 }}, two_ee {{ tex 2 }} :: 'de_'     ::=       {{ com Dunfield and lambdai's expressions }}
   | x              ::  :: var     {{ com variables }}
   | T              ::  :: top     {{ com top }}
   | i              ::  :: lit     {{ com lit }}

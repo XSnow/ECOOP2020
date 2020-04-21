@@ -18,7 +18,7 @@ typ, A {{ tex A }}, B {{ tex B }}, C {{ tex C }}, D {{ tex D }}, char {{ tex \ma
   | ( A )          :: S:: paren   {{ coq [[A]] }}
 
 
-exp, e {{ tex e }}, v {{ tex v }}, one_e {{ tex 1 }}, two_e {{ tex 2 }} :: 'e_'     ::=       {{ com expressions }}
+exp, e {{ tex e }}, v {{ tex v }}, one_e {{ tex 1 }}, two_e {{ tex 2 }} :: 'e_'     ::=       {{ com our expressions }}
   | x              ::  :: var     {{ com variables }}
   | T              ::  :: top     {{ com top }}
   | i              ::  :: lit     {{ com lit }}

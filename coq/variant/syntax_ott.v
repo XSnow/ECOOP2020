@@ -9,7 +9,7 @@ Inductive typ : Set :=  (*r types *)
  | t_arrow (A:typ) (B:typ) (*r function types *)
  | t_and (A:typ) (B:typ) (*r intersection *).
 
-Inductive dexp : Set :=  (*r expressions *)
+Inductive dexp : Set :=  (*r Dunfield and lambdai's expressions *)
  | de_var_b (_:nat) (*r variables *)
  | de_var_f (x:var) (*r variables *)
  | de_top : dexp (*r top *)
@@ -24,7 +24,7 @@ Inductive st : Set :=  (*r input type or projection label *)
 
 Definition ctx : Set := list ( atom * typ ).
 
-Inductive exp : Set :=  (*r expressions *)
+Inductive exp : Set :=  (*r our expressions *)
  | e_var_b (_:nat) (*r variables *)
  | e_var_f (x:var) (*r variables *)
  | e_top : exp (*r top *)
@@ -52,14 +52,14 @@ Definition ls : Set := list st.
 (** opening up abstractions *)
 Fixpoint open_dexp_wrt_dexp_rec (k:nat) (ee_5:dexp) (ee__6:dexp) {struct ee__6}: dexp :=
   match ee__6 with
-  | (de_var_b nat) => 
+  | (de_var_b nat) =>
       match lt_eq_lt_dec nat k with
         | inleft (left _) => de_var_b nat
         | inleft (right _) => ee_5
         | inright _ => de_var_b (nat - 1)
       end
   | (de_var_f x) => de_var_f x
-  | de_top => de_top 
+  | de_top => de_top
   | (de_lit i5) => de_lit i5
   | (de_abs ee) => de_abs (open_dexp_wrt_dexp_rec (S k) ee_5 ee)
   | (de_app ee1 ee2) => de_app (open_dexp_wrt_dexp_rec k ee_5 ee1) (open_dexp_wrt_dexp_rec k ee_5 ee2)
@@ -69,7 +69,7 @@ end.
 
 Fixpoint open_value_wrt_exp_rec (k:nat) (e5:exp) (v_5:value) {struct v_5}: value :=
   match v_5 with
-  | v_top => v_top 
+  | v_top => v_top
   | (v_lit i5) => v_lit i5
   | (v_topv v) => v_topv (open_value_wrt_exp_rec k e5 v)
   | (v_absv e A B) => v_absv (open_exp_wrt_exp_rec (S k) e5 e) A B
@@ -77,14 +77,14 @@ Fixpoint open_value_wrt_exp_rec (k:nat) (e5:exp) (v_5:value) {struct v_5}: value
 end
 with open_exp_wrt_exp_rec (k:nat) (e_5:exp) (e__6:exp) {struct e__6}: exp :=
   match e__6 with
-  | (e_var_b nat) => 
+  | (e_var_b nat) =>
       match lt_eq_lt_dec nat k with
         | inleft (left _) => e_var_b nat
         | inleft (right _) => e_5
         | inright _ => e_var_b (nat - 1)
       end
   | (e_var_f x) => e_var_f x
-  | e_top => e_top 
+  | e_top => e_top
   | (e_lit i5) => e_lit i5
   | (e_abs e A B) => e_abs (open_exp_wrt_exp_rec (S k) e_5 e) A B
   | (e_fixpoint e A) => e_fixpoint (open_exp_wrt_exp_rec (S k) e_5 e) A
@@ -107,7 +107,7 @@ Definition open_exp_wrt_exp e_5 e__6 := open_exp_wrt_exp_rec 0 e__6 e_5.
 Inductive lc_dexp : dexp -> Prop :=    (* defn lc_dexp *)
  | lc_de_var_f : forall (x:var),
      (lc_dexp (de_var_f x))
- | lc_de_top : 
+ | lc_de_top :
      (lc_dexp de_top)
  | lc_de_lit : forall (i5:i),
      (lc_dexp (de_lit i5))
@@ -128,7 +128,7 @@ Inductive lc_dexp : dexp -> Prop :=    (* defn lc_dexp *)
 
 (* defns LC_value_exp *)
 Inductive lc_value : value -> Prop :=    (* defn lc_value *)
- | lc_v_top : 
+ | lc_v_top :
      (lc_value v_top)
  | lc_v_lit : forall (i5:i),
      (lc_value (v_lit i5))
@@ -145,7 +145,7 @@ Inductive lc_value : value -> Prop :=    (* defn lc_value *)
 with lc_exp : exp -> Prop :=    (* defn lc_exp *)
  | lc_e_var_f : forall (x:var),
      (lc_exp (e_var_f x))
- | lc_e_top : 
+ | lc_e_top :
      (lc_exp e_top)
  | lc_e_lit : forall (i5:i),
      (lc_exp (e_lit i5))
@@ -209,7 +209,7 @@ Fixpoint subst_exp (e_5:exp) (x5:var) (e__6:exp) {struct e__6} : exp :=
   match e__6 with
   | (e_var_b nat) => e_var_b nat
   | (e_var_f x) => (if eq_var x x5 then e_5 else (e_var_f x))
-  | e_top => e_top 
+  | e_top => e_top
   | (e_lit i5) => e_lit i5
   | (e_abs e A B) => e_abs (subst_exp e_5 x5 e) A B
   | (e_fixpoint e A) => e_fixpoint (subst_exp e_5 x5 e) A
@@ -220,7 +220,7 @@ Fixpoint subst_exp (e_5:exp) (x5:var) (e__6:exp) {struct e__6} : exp :=
 end
 with subst_value (e5:exp) (x5:var) (v_5:value) {struct v_5} : value :=
   match v_5 with
-  | v_top => v_top 
+  | v_top => v_top
   | (v_lit i5) => v_lit i5
   | (v_topv v) => v_topv (subst_value e5 x5 v)
   | (v_absv e A B) => v_absv (subst_exp e5 x5 e) A B
@@ -231,7 +231,7 @@ Fixpoint subst_dexp (ee_5:dexp) (x5:var) (ee__6:dexp) {struct ee__6} : dexp :=
   match ee__6 with
   | (de_var_b nat) => de_var_b nat
   | (de_var_f x) => (if eq_var x x5 then ee_5 else (de_var_f x))
-  | de_top => de_top 
+  | de_top => de_top
   | (de_lit i5) => de_lit i5
   | (de_abs ee) => de_abs (subst_dexp ee_5 x5 ee)
   | (de_app ee1 ee2) => de_app (subst_dexp ee_5 x5 ee1) (subst_dexp ee_5 x5 ee2)
@@ -244,7 +244,7 @@ end.
 
 (* defns TopLikeType *)
 Inductive topLike : typ -> Prop :=    (* defn topLike *)
- | TL_top : 
+ | TL_top :
      topLike t_top
  | TL_and : forall (A B:typ),
      topLike A ->
@@ -253,7 +253,7 @@ Inductive topLike : typ -> Prop :=    (* defn topLike *)
 
 (* defns OrdinaryType *)
 Inductive ord : typ -> Prop :=    (* defn ord *)
- | O_int : 
+ | O_int :
      ord t_int
  | O_arrow : forall (A B:typ),
      ord (t_arrow A B).
@@ -279,7 +279,7 @@ Inductive disjoint : typ -> typ -> Prop :=    (* defn disjoint *)
 
 (* defns Subtyping *)
 Inductive sub : typ -> typ -> Prop :=    (* defn sub *)
- | S_z : 
+ | S_z :
      sub t_int t_int
  | S_top : forall (A:typ),
      sub A t_top
@@ -360,7 +360,7 @@ with step : exp -> exp -> Prop :=    (* defn step *)
      step (e_merge (e_val v1) (e_val v2)) (e_val (v_merge v1 v2))
  | Step_litv : forall (i5:i),
      step (e_lit i5) (e_val (v_lit i5))
- | Step_topv : 
+ | Step_topv :
      step e_top (e_val v_top)
  | Step_fix : forall (e:exp) (A:typ),
      lc_exp (e_fixpoint e A) ->
@@ -370,7 +370,7 @@ with step : exp -> exp -> Prop :=    (* defn step *)
 
 Definition disjointSpec A B :=
   forall C, sub A C -> sub B C -> topLike C.
-  
+
 Definition consistencySpec v1 v2 :=
   forall A v1' v2', ord A -> TypedReduce v1 A v1' -> TypedReduce v2 A v2' -> v1' = v2'.
 
@@ -422,7 +422,7 @@ Inductive Etyping : ctx -> exp -> typ -> Prop :=    (* defn Etyping *)
       ( forall x , x \notin  L  -> Etyping  (cons ( x , A )  G )   ( open_exp_wrt_exp e (e_var_f x) )  B )  ->
      sub B D ->
      sub C A ->
-     Etyping G  ( (e_abs e A D) )   (t_arrow C D) 
+     Etyping G  ( (e_abs e A D) )   (t_arrow C D)
  | Etyp_app : forall (G:ctx) (e1 e2:exp) (B A:typ),
      Etyping G e2 A ->
      Etyping G e1 (t_arrow A B) ->
@@ -440,7 +440,7 @@ Inductive Etyping : ctx -> exp -> typ -> Prop :=    (* defn Etyping *)
       ( forall x , x \notin  L  -> Etyping  (cons ( x , A )  G )   ( open_exp_wrt_exp e (e_var_f x) )  A )  ->
      Etyping G  ( (e_fixpoint e A) )  A
 with Vtyping : value -> typ -> Prop :=    (* defn Vtyping *)
- | Vtyp_top : 
+ | Vtyp_top :
      Vtyping v_top t_top
  | Vtyp_topv : forall (v:value) (A:typ),
      Vtyping v A ->
@@ -451,7 +451,7 @@ with Vtyping : value -> typ -> Prop :=    (* defn Vtyping *)
       ( forall x , x \notin  L  -> Etyping  (cons ( x , A )   nil  )   ( open_exp_wrt_exp e (e_var_f x) )  B )  ->
      sub B D ->
      sub C A ->
-     Vtyping  ( (v_absv e A D) )   (t_arrow C D) 
+     Vtyping  ( (v_absv e A D) )   (t_arrow C D)
  | Vtyp_merge : forall (v1 v2:value) (A B:typ),
      Vtyping v1 A ->
      Vtyping v2 B ->
@@ -462,7 +462,7 @@ with Vtyping : value -> typ -> Prop :=    (* defn Vtyping *)
 Inductive DValue : dexp -> Prop :=    (* defn DValue *)
  | DVal_var : forall (x:var),
      DValue (de_var_f x)
- | DVal_top : 
+ | DVal_top :
      DValue de_top
  | DVal_nat : forall (i5:i),
      DValue (de_lit i5)
@@ -487,10 +487,10 @@ Inductive DunfieldStep : dexp -> dexp -> Prop :=    (* defn DunfieldStep *)
  | DStep_beta : forall (ee vv:dexp),
      lc_dexp (de_abs ee) ->
      DValue vv ->
-     DunfieldStep (de_app  ( (de_abs ee) )  vv)  (  (open_dexp_wrt_dexp  ee vv )  ) 
+     DunfieldStep (de_app  ( (de_abs ee) )  vv)  (  (open_dexp_wrt_dexp  ee vv )  )
  | DStep_fix : forall (ee:dexp),
      lc_dexp (de_fixpoint ee) ->
-     DunfieldStep (de_fixpoint ee)  (open_dexp_wrt_dexp  ee (de_fixpoint ee) ) 
+     DunfieldStep (de_fixpoint ee)  (open_dexp_wrt_dexp  ee (de_fixpoint ee) )
  | DStep_unmergel : forall (ee1 ee2:dexp),
      lc_dexp ee2 ->
      lc_dexp ee1 ->
@@ -529,7 +529,7 @@ Inductive WF : ctx -> typ -> Prop :=    (* defn WF *)
 
 (* defns ISubtyping *)
 Inductive isub : typ -> typ -> Prop :=    (* defn isub *)
- | IS_z : 
+ | IS_z :
      isub t_int t_int
  | IS_top : forall (A:typ),
      isub A t_top
@@ -581,5 +581,3 @@ Inductive ITyping : ctx -> dexp -> typ -> exp -> Prop :=    (* defn ITyping *)
 
 (** infrastructure *)
 Hint Constructors topLike ord disjoint sub TypedReduce step consistent Etyping Vtyping DValue DunfieldStep WF isub ITyping lc_dexp lc_value lc_exp.
-
-
