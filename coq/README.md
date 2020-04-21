@@ -17,7 +17,7 @@ which is included in the directory.
    The recommended way to install Coq is via `OPAM`. Refer to
    [here](https://coq.inria.fr/opam/www/using.html) for detailed steps. Or one could
    download the pre-built packages for Windows and MacOS via
-   [here](https://github.com/coq/coq/releases/tag/V8.9.1). Choose a suitable installer
+   [here](https://github.com/coq/coq/releases/tag/V8.10.2). Choose a suitable installer
    according to your platform.
 
 2. Make sure `Coq` is installed (type `coqc` in the terminal, if you see "command
