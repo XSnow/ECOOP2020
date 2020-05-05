@@ -3,7 +3,7 @@ A Type-Directed Operational Semantics for a Calculus with a Merge Operator
 
 ## Building Instructions
 
-Our Coq proofs are verified in **Coq 8.10.2**. We rely on two Coq libraries:
+Our Coq proofs are verified in **Coq 8.10.2** and **Coq 8.11.1**. We rely on two Coq libraries:
 [`metalib`](https://github.com/plclub/metalib) for the locally nameless
 representation in our proofs; and
 [`LibTactics.v`](http://gallium.inria.fr/~fpottier/ssphs/LibTactics.html),
@@ -13,7 +13,7 @@ which is included in the directory.
 
 ### Prerequisites
 
-1. Install Coq 8.10.2.
+1. Install Coq 8.10.2 or Coq 8.11.1.
    The recommended way to install Coq is via `OPAM`. Refer to
    [here](https://coq.inria.fr/opam/www/using.html) for detailed steps. Or one could
    download the pre-built packages for Windows and MacOS via
