@@ -63,9 +63,9 @@ Section Star.
 
 End Star.
 
-Hint Constructors star.
+Hint Constructors star : core.
 
-Hint Resolve star_trans star_one.
+Hint Resolve star_trans star_one : core.
 
 
 Definition mul_dstep := star dexp DunfieldStep.
@@ -115,13 +115,13 @@ Proof.
   pick fresh y.
   assert (uniq ((y, A) :: G)) by auto.
   solve_uniq.
-  
+
   pick fresh y.
   assert (uniq ((y, A) :: G)) by auto.
   solve_uniq.
 Qed.
 
-Hint Resolve typing_regular_2.
+Hint Resolve typing_regular_2 : core.
 
 Require Import Omega.
 
@@ -140,7 +140,7 @@ Proof.
     eauto.
 Qed.
 
-Hint Resolve typing_regular_1_exp typing_regular_1_val.
+Hint Resolve typing_regular_1_exp typing_regular_1_val : core.
 
 (** Other properties *)
 Lemma fv_in_dom:
@@ -232,7 +232,7 @@ Lemma multi_red_merge1 : forall t1 t2 t1',
     (e_merge t1 t2) ->* (e_merge t1' t2).
 Proof.
   introv ? Red.
-  induction* Red. 
+  induction* Red.
 Qed.
 
 

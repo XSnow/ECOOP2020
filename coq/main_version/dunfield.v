@@ -169,7 +169,7 @@ Proof.
     auto.
 Qed.
 
-Hint Resolve erasure_lc TypedReduce_lc.
+Hint Resolve erasure_lc TypedReduce_lc : core.
 
 Lemma star_onestep : forall a b,
     DunfieldStep a b -> a ->>*  b.

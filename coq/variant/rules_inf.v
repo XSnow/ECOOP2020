@@ -262,9 +262,9 @@ Definition body_exp_wrt_exp e1 := forall x1, lc_exp (open_exp_wrt_exp e1 (e_var_
 
 Definition body_value_wrt_exp v1 := forall x1, lc_value (open_value_wrt_exp v1 (e_var_f x1)).
 
-Hint Unfold body_exp_wrt_exp.
+Hint Unfold body_exp_wrt_exp : core.
 
-Hint Unfold body_value_wrt_exp.
+Hint Unfold body_value_wrt_exp : core.
 
 
 (* *********************************************************************** *)
@@ -1271,17 +1271,17 @@ Qed.
 Hint Extern 1 (lc_exp (e_abs _ _ _)) =>
   let x1 := fresh in
   pick_fresh x1;
-  apply (lc_e_abs_exists x1).
+  apply (lc_e_abs_exists x1) : core.
 
 Hint Extern 1 (lc_exp (e_fixpoint _ _)) =>
   let x1 := fresh in
   pick_fresh x1;
-  apply (lc_e_fixpoint_exists x1).
+  apply (lc_e_fixpoint_exists x1) : core.
 
 Hint Extern 1 (lc_value (v_absv _ _ _)) =>
   let x1 := fresh in
   pick_fresh x1;
-  apply (lc_v_absv_exists x1).
+  apply (lc_v_absv_exists x1) : core.
 
 Lemma lc_body_exp_wrt_exp :
 forall e1 e2,

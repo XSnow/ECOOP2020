@@ -97,8 +97,8 @@ Proof.
       unfold open_exp_wrt_exp_rec;
       simpl;
       auto.
-  *)  
-    
+  *)
+
 Lemma erasure_open : forall e t,
     | e ^^ t | = open_dexp_wrt_dexp (| e |)  (| t |).
 Proof.
@@ -157,7 +157,7 @@ Proof.
     split; constructor;
     size_ind_auto.
 Qed.
-                                      
+
 Lemma erasure_lc_exp : forall e,
     lc_exp e -> lc_dexp (erase_anno e).
 Proof.
@@ -185,7 +185,7 @@ Proof.
     auto.
 Qed.
 
-Hint Resolve erasure_lc_exp erasure_lc_val TypedReduce_lc.
+Hint Resolve erasure_lc_exp erasure_lc_val TypedReduce_lc : core.
 
 Lemma star_onestep : forall a b,
     DunfieldStep a b -> a ->>*  b.
@@ -291,7 +291,7 @@ Proof.
     forwards* [? ?]: erasure_lc_val H1.
     apply~ step_merger.
 Qed.
-    
+
 Theorem reduction_soundness : forall e e',
     step e e' -> (erase_anno e) ->>* (erase_anno e').
 Proof.
@@ -310,7 +310,7 @@ Proof.
     eapply step_appr.
     apply H1.
     auto. auto.
-    
+
     apply star_onestep.
     assert (| e ^^ e_val v'| = open_dexp_wrt_dexp (| e |)  (| e_val v' |)) by apply erasure_open.
     assert ( | e_val v' | = || v' || ) by auto.

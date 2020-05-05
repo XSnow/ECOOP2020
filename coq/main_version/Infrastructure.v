@@ -63,9 +63,9 @@ Section Star.
 
 End Star.
 
-Hint Constructors star.
+Hint Constructors star : core.
 
-Hint Resolve star_trans star_one.
+Hint Resolve star_trans star_one : core.
 
 
 Definition mul_dstep := star dexp DunfieldStep.
@@ -128,7 +128,7 @@ Proof.
   solve_uniq.
 Qed.
 
-Hint Resolve typing_regular_2.
+Hint Resolve typing_regular_2 : core.
 
 Require Import Omega.
 
@@ -141,7 +141,7 @@ Proof.
     eauto.
 Qed.
 
-Hint Resolve typing_regular_1.
+Hint Resolve typing_regular_1 : core.
 
 (** Other properties *)
 

@@ -580,4 +580,4 @@ Inductive ITyping : ctx -> dexp -> typ -> exp -> Prop :=    (* defn ITyping *)
 
 
 (** infrastructure *)
-Hint Constructors topLike ord disjoint sub TypedReduce step consistent Etyping Vtyping DValue DunfieldStep WF isub ITyping lc_dexp lc_value lc_exp.
+Hint Constructors topLike ord disjoint sub TypedReduce step consistent Etyping Vtyping DValue DunfieldStep WF isub ITyping lc_dexp lc_value lc_exp : core.

@@ -56,7 +56,7 @@ Require Import Coq.Lists.List.
   Lemma test : forall b, b = false.
   time eauto 7. (* takes over 4 seconds  to fail! *) *)
 
-Remove Hints Bool.trans_eq_bool.
+Remove Hints Bool.trans_eq_bool : core.
 
 
 (* ********************************************************************** *)
@@ -101,6 +101,7 @@ Inductive ltac_No_arg : Set :=
 Inductive ltac_Wild : Set :=
   | ltac_wild : ltac_Wild.
 
+Declare Scope ltac_scope.
 Notation "'__'" := ltac_wild : ltac_scope.
 
 (** [ltac_wilds] is another constant that is typically used to
@@ -354,9 +355,9 @@ Ltac fast_rm_inside E :=
 (** When tactic takes a natural number as argument, it may be
     parsed either as a natural number or as a relative number.
     In order for tactics to convert their arguments into natural numbers,
-    we provide a conversion tactic. 
-    
-    Note: the tactic [number_to_nat] is extended in [LibInt] to 
+    we provide a conversion tactic.
+
+    Note: the tactic [number_to_nat] is extended in [LibInt] to
     take into account the [int] type, alias for [Z]. *)
 
 Require Coq.Numbers.BinNums Coq.ZArith.BinInt.
@@ -586,7 +587,7 @@ Tactic Notation "protects" constr(E) "do" tactic(Tac) "/" :=
 
 Definition eq' := @eq.
 
-Hint Unfold eq'.
+Hint Unfold eq' : core.
 
 Notation "x '='' y" := (@eq' _ x y)
   (at level 70, y at next level).
@@ -2803,7 +2804,7 @@ Tactic Notation "inject" hyp(H) "as" ident(X1) ident(X2) ident(X3)
     are similar to [inverts] and [injects] except that they perform
     substitution on all equalities from the context and not only
     the ones freshly generated. The counterpart is that they have
-    simpler implementations. 
+    simpler implementations.
 
     DEPRECATED: these tactics should no longer be used. *)
 
@@ -2864,7 +2865,7 @@ Tactic Notation "cases" constr(E) :=
     Currently, this tactic is extended in LibReflect to clean up
     boolean propositions. *)
 
-Ltac case_if_post H := 
+Ltac case_if_post H :=
   tryfalse.
 
 (** [case_if] looks for a pattern of the form [if ?B then ?E1 else ?E2]
@@ -4989,6 +4990,7 @@ Notation "'exists' x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 ',' P" :=
     it possible to simplify or push to the context let-bindings one by one. *)
 
 (** Definition of ['let] *)
+Declare Scope let_scope.
 
 Definition let_binding (A B:Type) (v:A) (K:A->B) := K v.
 

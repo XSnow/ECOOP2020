@@ -154,7 +154,7 @@ Hint Constructors lc_set_dexp : core lngen.
 
 Definition body_dexp_wrt_dexp ee1 := forall x1, lc_dexp (open_dexp_wrt_dexp ee1 (de_var_f x1)).
 
-Hint Unfold body_dexp_wrt_dexp.
+Hint Unfold body_dexp_wrt_dexp : core.
 
 
 (* *********************************************************************** *)
@@ -763,12 +763,12 @@ Qed.
 Hint Extern 1 (lc_dexp (de_abs _)) =>
   let x1 := fresh in
   pick_fresh x1;
-  apply (lc_de_abs_exists x1).
+  apply (lc_de_abs_exists x1) : core.
 
 Hint Extern 1 (lc_dexp (de_fixpoint _)) =>
   let x1 := fresh in
   pick_fresh x1;
-  apply (lc_de_fixpoint_exists x1).
+  apply (lc_de_fixpoint_exists x1) : core.
 
 Lemma lc_body_dexp_wrt_dexp :
 forall ee1 ee2,
