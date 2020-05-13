@@ -1,0 +1,157 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+defns
+IDisjoint :: '' ::=
+
+defn A *i B :: :: icfpDisjoint  :: 'ID_'
+{{ com ICFP Disjointness }}
+by
+
+
+A1 *i B
+A2 *i B
+--------------- :: andL
+A1 & A2 *i B
+
+
+A *i B1
+A *i B2
+--------------- :: andR
+A *i B1 & B2
+
+
+A *ax B
+------------- :: Ax
+A *i B
+
+
+defn A *ax B :: :: icfpDisjointAx :: 'IDax_'
+{{ com ICFP Disjointness }}
+by
+
+
+---------------------- :: IntArr
+int *ax A -> B
+
+
+A *ax B
+------------- :: symm
+B *ax A
+
+
+defns
+WellformedType :: '' ::=
+
+defn
+G |= A :: :: WF :: 'Wf_'
+{{ com Wellformed Types }}
+by
+
+------------- :: int
+G |= int
+
+------------- :: top
+G |= Top
+
+
+G |= A
+G |= B
+------------- :: arr
+G |= A -> B
+
+
+G |= A
+G |= B
+A *i B
+------------- :: and
+G |= A & B
+
+
+defns
+ISubtyping :: '' ::=
+
+defn
+A <<: B  :: :: isub :: IS_
+{{ com icfp Subtyping (Restricted) }}
+{{ tex [[A]] [[<:]] [[B]] }}
+by
+
+
+---------------------- :: z
+int <<: int 
+
+--------------- :: top
+A <<: Top 
+
+
+B1 <<: A1 
+A2 <<: B2 
+------------------------ :: arr
+A1 -> A2 <<: B1 -> B2
+
+
+A1 <<: A3
+------------------------- :: andl1
+A1 & A2 <<: A3
+
+
+A2 <<: A3
+------------------------- :: andl2
+A1 & A2 <<: A3
+
+A1 <<: A2
+A1 <<: A3
+----------------- :: andr
+A1 <<: A2 & A3
+
+
+
+
+defns
+ITyping :: '' ::=
+
+defn
+G |= ee : A => e ::   :: ITyping :: 'ITyp_'
+{{ com icfp2016 Typing rules }}
+{{ tex [[G]][[|=]][[ee]][[:]][[A]] }}
+by
+
+
+uniq G
+------------------- :: top
+G |= T : Top => T
+
+
+uniq G
+-------------------- :: lit
+G |= i : int => i
+
+
+uniq G
+x : A in G
+-------------------------- :: var
+G |= x : A => x
+
+
+G |= A
+G , x : A |= ee : B => e
+---------------------------------------------- :: lam
+G |= (\x . ee)  : A->B  => (\x : A . e : B)
+
+
+G |= ee1 : A->B => e1
+G |= ee2 : A => e2
+--------------------------- :: app
+G |= ee1 ee2 : B => e1 e2
+
+
+G |= ee1 : A => e1
+G |= ee2 : B => e2
+A *i B
+-------------------------------------- :: merge
+G |= ee1 ,, ee2 : A & B => e1 ,, e2
+
+
+G |= ee : A => e
+A <<: B
+--------------------- :: sub
+G |= ee: B => e : B

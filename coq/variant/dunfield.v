@@ -17,7 +17,7 @@ Fixpoint erase_anno (e:exp) : dexp :=
   | (e_var_f x) => de_var_f x
   | e_top => de_top
   | (e_lit i5) => de_lit i5
-  | (e_abs e A B) => de_abs (erase_anno e)
+  | (e_abs A e B) => de_abs (erase_anno e)
   | (e_fixpoint e A) => de_fixpoint (erase_anno e)
   | (e_app e1 e2) => de_app (erase_anno e1) (erase_anno e2)
   | (e_merge e1 e2) => de_merge (erase_anno e1) (erase_anno e2)
@@ -29,7 +29,7 @@ with erase_anno_v (v:value) : dexp :=
        | v_top => de_top
        | (v_topv v) => erase_anno_v v
        | (v_lit i5) => de_lit i5
-       | (v_absv e B D) => de_abs (erase_anno e)
+       | (v_absv B e D) => de_abs (erase_anno e)
        | (v_merge v1 v2) => de_merge (erase_anno_v v1) (erase_anno_v v2)
        end.
 

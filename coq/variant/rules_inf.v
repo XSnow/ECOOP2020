@@ -1,4 +1,4 @@
-(* !!! WARNING: AUTO GENERATED. DO NOT MODIFY !!! *)
+Require Import Coq.Arith.Wf_nat.
 Require Import Coq.Logic.FunctionalExtensionality.
 Require Import Coq.Program.Equality.
 
@@ -53,7 +53,7 @@ Fixpoint close_exp_wrt_exp_rec (n1 : nat) (x1 : var) (e1 : exp) {struct e1} : ex
     | e_var_b n2 => if (lt_ge_dec n2 n1) then (e_var_b n2) else (e_var_b (S n2))
     | e_top => e_top
     | e_lit i1 => e_lit i1
-    | e_abs e2 A1 B1 => e_abs (close_exp_wrt_exp_rec (S n1) x1 e2) A1 B1
+    | e_abs A1 e2 B1 => e_abs A1 (close_exp_wrt_exp_rec (S n1) x1 e2) B1
     | e_fixpoint e2 A1 => e_fixpoint (close_exp_wrt_exp_rec (S n1) x1 e2) A1
     | e_app e2 e3 => e_app (close_exp_wrt_exp_rec n1 x1 e2) (close_exp_wrt_exp_rec n1 x1 e3)
     | e_merge e2 e3 => e_merge (close_exp_wrt_exp_rec n1 x1 e2) (close_exp_wrt_exp_rec n1 x1 e3)
@@ -66,7 +66,7 @@ with close_value_wrt_exp_rec (n1 : nat) (x1 : var) (v1 : value) {struct v1} : va
     | v_top => v_top
     | v_lit i1 => v_lit i1
     | v_topv v2 => v_topv (close_value_wrt_exp_rec n1 x1 v2)
-    | v_absv e1 A1 B1 => v_absv (close_exp_wrt_exp_rec (S n1) x1 e1) A1 B1
+    | v_absv A1 e1 B1 => v_absv A1 (close_exp_wrt_exp_rec (S n1) x1 e1) B1
     | v_merge v2 v3 => v_merge (close_value_wrt_exp_rec n1 x1 v2) (close_value_wrt_exp_rec n1 x1 v3)
   end.
 
@@ -92,7 +92,7 @@ Fixpoint size_exp (e1 : exp) {struct e1} : nat :=
     | e_var_b n1 => 1
     | e_top => 1
     | e_lit i1 => 1
-    | e_abs e2 A1 B1 => 1 + (size_exp e2) + (size_typ A1) + (size_typ B1)
+    | e_abs A1 e2 B1 => 1 + (size_typ A1) + (size_exp e2) + (size_typ B1)
     | e_fixpoint e2 A1 => 1 + (size_exp e2) + (size_typ A1)
     | e_app e2 e3 => 1 + (size_exp e2) + (size_exp e3)
     | e_merge e2 e3 => 1 + (size_exp e2) + (size_exp e3)
@@ -105,7 +105,7 @@ with size_value (v1 : value) {struct v1} : nat :=
     | v_top => 1
     | v_lit i1 => 1
     | v_topv v2 => 1 + (size_value v2)
-    | v_absv e1 A1 B1 => 1 + (size_exp e1) + (size_typ A1) + (size_typ B1)
+    | v_absv A1 e1 B1 => 1 + (size_typ A1) + (size_exp e1) + (size_typ B1)
     | v_merge v2 v3 => 1 + (size_value v2) + (size_value v3)
   end.
 
@@ -125,9 +125,9 @@ Inductive degree_exp_wrt_exp : nat -> exp -> Prop :=
     degree_exp_wrt_exp n1 (e_top)
   | degree_wrt_exp_e_lit : forall n1 i1,
     degree_exp_wrt_exp n1 (e_lit i1)
-  | degree_wrt_exp_e_abs : forall n1 e1 A1 B1,
+  | degree_wrt_exp_e_abs : forall n1 A1 e1 B1,
     degree_exp_wrt_exp (S n1) e1 ->
-    degree_exp_wrt_exp n1 (e_abs e1 A1 B1)
+    degree_exp_wrt_exp n1 (e_abs A1 e1 B1)
   | degree_wrt_exp_e_fixpoint : forall n1 e1 A1,
     degree_exp_wrt_exp (S n1) e1 ->
     degree_exp_wrt_exp n1 (e_fixpoint e1 A1)
@@ -154,9 +154,9 @@ with degree_value_wrt_exp : nat -> value -> Prop :=
   | degree_wrt_exp_v_topv : forall n1 v1,
     degree_value_wrt_exp n1 v1 ->
     degree_value_wrt_exp n1 (v_topv v1)
-  | degree_wrt_exp_v_absv : forall n1 e1 A1 B1,
+  | degree_wrt_exp_v_absv : forall n1 A1 e1 B1,
     degree_exp_wrt_exp (S n1) e1 ->
-    degree_value_wrt_exp n1 (v_absv e1 A1 B1)
+    degree_value_wrt_exp n1 (v_absv A1 e1 B1)
   | degree_wrt_exp_v_merge : forall n1 v1 v2,
     degree_value_wrt_exp n1 v1 ->
     degree_value_wrt_exp n1 v2 ->
@@ -185,9 +185,9 @@ Inductive lc_set_exp : exp -> Set :=
     lc_set_exp (e_top)
   | lc_set_e_lit : forall i1,
     lc_set_exp (e_lit i1)
-  | lc_set_e_abs : forall e1 A1 B1,
+  | lc_set_e_abs : forall A1 e1 B1,
     (forall x1 : var, lc_set_exp (open_exp_wrt_exp e1 (e_var_f x1))) ->
-    lc_set_exp (e_abs e1 A1 B1)
+    lc_set_exp (e_abs A1 e1 B1)
   | lc_set_e_fixpoint : forall e1 A1,
     (forall x1 : var, lc_set_exp (open_exp_wrt_exp e1 (e_var_f x1))) ->
     lc_set_exp (e_fixpoint e1 A1)
@@ -214,9 +214,9 @@ with lc_set_value : value -> Set :=
   | lc_set_v_topv : forall v1,
     lc_set_value v1 ->
     lc_set_value (v_topv v1)
-  | lc_set_v_absv : forall e1 A1 B1,
+  | lc_set_v_absv : forall A1 e1 B1,
     (forall x1 : var, lc_set_exp (open_exp_wrt_exp e1 (e_var_f x1))) ->
-    lc_set_value (v_absv e1 A1 B1)
+    lc_set_value (v_absv A1 e1 B1)
   | lc_set_v_merge : forall v1 v2,
     lc_set_value v1 ->
     lc_set_value v2 ->
@@ -1245,9 +1245,9 @@ Ltac exp_value_lc_exists_tac :=
           end).
 
 Lemma lc_e_abs_exists :
-forall x1 e1 A1 B1,
+forall x1 A1 e1 B1,
   lc_exp (open_exp_wrt_exp e1 (e_var_f x1)) ->
-  lc_exp (e_abs e1 A1 B1).
+  lc_exp (e_abs A1 e1 B1).
 Proof.
 intros; exp_value_lc_exists_tac; eauto with lngen.
 Qed.
@@ -1261,9 +1261,9 @@ intros; exp_value_lc_exists_tac; eauto with lngen.
 Qed.
 
 Lemma lc_v_absv_exists :
-forall x1 e1 A1 B1,
+forall x1 A1 e1 B1,
   lc_exp (open_exp_wrt_exp e1 (e_var_f x1)) ->
-  lc_value (v_absv e1 A1 B1).
+  lc_value (v_absv A1 e1 B1).
 Proof.
 intros; exp_value_lc_exists_tac; eauto with lngen.
 Qed.
@@ -1317,15 +1317,15 @@ Qed.
 
 Hint Resolve lc_body_value_wrt_exp : lngen.
 
-Lemma lc_body_e_abs_1 :
-forall e1 A1 B1,
-  lc_exp (e_abs e1 A1 B1) ->
+Lemma lc_body_e_abs_2 :
+forall A1 e1 B1,
+  lc_exp (e_abs A1 e1 B1) ->
   body_exp_wrt_exp e1.
 Proof.
 default_simp.
 Qed.
 
-Hint Resolve lc_body_e_abs_1 : lngen.
+Hint Resolve lc_body_e_abs_2 : lngen.
 
 Lemma lc_body_e_fixpoint_1 :
 forall e1 A1,
@@ -1337,15 +1337,15 @@ Qed.
 
 Hint Resolve lc_body_e_fixpoint_1 : lngen.
 
-Lemma lc_body_v_absv_1 :
-forall e1 A1 B1,
-  lc_value (v_absv e1 A1 B1) ->
+Lemma lc_body_v_absv_2 :
+forall A1 e1 B1,
+  lc_value (v_absv A1 e1 B1) ->
   body_exp_wrt_exp e1.
 Proof.
 default_simp.
 Qed.
 
-Hint Resolve lc_body_v_absv_1 : lngen.
+Hint Resolve lc_body_v_absv_2 : lngen.
 
 (* begin hide *)
 
@@ -2461,10 +2461,10 @@ Qed.
 Hint Resolve subst_value_close_value_wrt_exp_open_value_wrt_exp : lngen.
 
 Lemma subst_exp_e_abs :
-forall x2 e2 A1 B1 e1 x1,
+forall x2 A1 e2 B1 e1 x1,
   lc_exp e1 ->
   x2 `notin` fv_exp e1 `union` fv_exp e2 `union` singleton x1 ->
-  subst_exp e1 x1 (e_abs e2 A1 B1) = e_abs (close_exp_wrt_exp x2 (subst_exp e1 x1 (open_exp_wrt_exp e2 (e_var_f x2)))) (A1) (B1).
+  subst_exp e1 x1 (e_abs A1 e2 B1) = e_abs (A1) (close_exp_wrt_exp x2 (subst_exp e1 x1 (open_exp_wrt_exp e2 (e_var_f x2)))) (B1).
 Proof.
 default_simp.
 Qed.
@@ -2483,10 +2483,10 @@ Qed.
 Hint Resolve subst_exp_e_fixpoint : lngen.
 
 Lemma subst_value_v_absv :
-forall x2 e2 A1 B1 e1 x1,
+forall x2 A1 e2 B1 e1 x1,
   lc_exp e1 ->
   x2 `notin` fv_exp e1 `union` fv_exp e2 `union` singleton x1 ->
-  subst_value e1 x1 (v_absv e2 A1 B1) = v_absv (close_exp_wrt_exp x2 (subst_exp e1 x1 (open_exp_wrt_exp e2 (e_var_f x2)))) (A1) (B1).
+  subst_value e1 x1 (v_absv A1 e2 B1) = v_absv (A1) (close_exp_wrt_exp x2 (subst_exp e1 x1 (open_exp_wrt_exp e2 (e_var_f x2)))) (B1).
 Proof.
 default_simp.
 Qed.

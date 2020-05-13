@@ -22,10 +22,10 @@ exp, e {{ tex e }}, one_e {{ tex 1 }}, two_e {{ tex 2 }} :: 'e_'     ::=       {
   | x              ::  :: var     {{ com variables }}
   | T              ::  :: top     {{ com top }}
   | i              ::  :: lit     {{ com lit }}
-  | \ x . e : A -> B
+  | \ x : A . e : B
                    ::  :: abs     (+ bind x in e +)
                                   {{ com abstractions }}
-	                          {{ tex [[\]][[x]].\,[[e]][[:]][[A]][[->]][[B]] }}
+	                          {{ tex [[\]][[x]][[:]][[A]].\,[[e]][[:]][[B]] }}
   | fix x . e : A  ::  :: fixpoint
                                   (+ bind x in e +)
                                   {{ com fixpoint }}
@@ -44,10 +44,10 @@ value, v {{ tex v }}, one_v {{ tex 1 }} :: 'v_'     ::=       {{ com values }}
   | T              ::  :: top     {{ com top }}
   | i              ::  :: lit     {{ com lit }}
   | v : Top        ::  :: topv    {{ com topv }}
-  | \ x . e : A -> B
+  | \ x : A . e : B
                    ::  :: absv    (+ bind x in e +)
                                   {{ com abstractions }}
-	                          {{ tex [[\]][[x]].\,[[e]][[:]][[A]][[->]][[B]] }}
+	                          {{ tex [[\]][[x]][[:]][[A]].\,[[e]][[:]][[B]] }}
   | v1 ,, v2       ::  :: merge   {{ com merge }}
   | ( v )          :: S:: paren   {{ coq ([[v]]) }}
 
@@ -277,7 +277,7 @@ v  ->Top  v:Top
 C <: A
 B <: D
 ------------------------------------------------------ :: arrow
-\ x . e : A -> B   ->(C -> D)  \ x . e : A -> D
+\ x : A . e : B   ->(C -> D)  \ x : A . e : D
 
 
 v1 ->A  v1'
@@ -306,12 +306,12 @@ by
 
 
 -------------------------------------------- :: abs
-\ x . e : A -> B --> <\ x . e : A -> B>
+\ x : A . e : B --> <\ x : A . e : B>
 
 
 v ->A v'
 ----------------------------------------------------------  :: beta
-(< \ x . e : A -> B >)  < v >  -->  ( e [ x ~> <v'> ] ) : B
+(< \ x : A . e : B >)  < v >  -->  ( e [ x ~> <v'> ] ) : B
 
 
 v  ->A  v'
@@ -360,16 +360,6 @@ T --> <T>
 fix x . e : A  -->   e [ x ~> fix x . e : A ]
 
 
-embed
-{{ coq
-
-Definition disjointSpec A B :=
-  forall C, sub A C -> sub B C -> topLike C.
-  
-Definition consistencySpec v1 v2 :=
-  forall A v1' v2', ord A -> TypedReduce v1 A v1' -> TypedReduce v2 A v2' -> v1' = v2'.
-}}
-
 
 
 defns
@@ -394,15 +384,15 @@ i ~~ i
 
 
 ----------------------------------- :: absOne
-\x .e :B->C  ~~ \x .e : B->C
+\x : B .e :C  ~~ \x : B .e : C
 
 
 ---------------------- :: litAbs
-i ~~ \x .e : B->C
+i ~~  \x : B .e : C
 
 
 ---------------------- :: absLit
-\x .e : B->C ~~ i
+ \x : B .e : C ~~ i
 
 
 v1 ~~ v
@@ -455,7 +445,7 @@ G , x : A |- e : B
 B <: D
 C <: A
 ------------------------------------------- :: abs
-G |- (\x . e : A->D) : (C->D)
+G |- ( \x : A .e : D ) : (C->D)
 
 
 G |- e2 : A
@@ -505,7 +495,7 @@ i : int
 B <: D
 C <: A
 ------------------------------------------- :: absv
-(\x . e : A->D) : (C->D)
+( \x : A .e : D ) : (C->D)
 
 
 v1 : A

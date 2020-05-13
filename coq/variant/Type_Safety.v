@@ -26,8 +26,8 @@ Proof.
     induction* Red2;
       try solve [inversion Heqv0];
       try solve [inversion Ord].
-  - (* v1 = v_absv e A D *)
-    remember (v_absv e A D).
+  - (* v1 = v_absv A e D *)
+    remember (v_absv A e D).
     induction* Red2;
       try solve [inversion Heqv];
       try solve [inversion Ord].
@@ -38,7 +38,7 @@ Proof.
     inverts* Red2;
       try solve [inverts* Ord].
 Qed.
-                                            
+
 Lemma consistent_afterTR : forall v A B C v1 v2, Vtyping v C -> TypedReduce v A v1 -> TypedReduce v B v2 -> consistencySpec v1 v2.
 Proof.
   intros v A B C v1 v2 Typ Red1 Red2.
@@ -109,7 +109,7 @@ Proof.
     subst.
     inverts Typ1.
     forwards*: TypedReduce_preservation H3.
-    auto. 
+    auto.
   - Case "typing_merge".
     introv J.
     inverts J.
@@ -204,7 +204,7 @@ Theorem progress : forall e A,
     (exists v, e = (e_val v)) \/ exists e', step e e'.
 Proof.
   introv Typ. lets Typ': Typ.
-  inductions Typ; 
+  inductions Typ;
       lets Lc  : typing_regular_1_exp Typ';
       try solve [left*];
       try solve [right*].

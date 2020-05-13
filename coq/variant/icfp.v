@@ -6,6 +6,7 @@ Require Import
         rules_inf
         Infrastructure
         Subtyping_inversion
+        Key_Properties
         rules_inf2
         dunfield.
 
@@ -24,7 +25,7 @@ Proof.
   try solve [eapply_first_hyp; eauto].
   omega.
 Qed.
-  
+
 Lemma open_dexp_eqn : forall x ee1 ee2,
        x `notin` fv_dexp ee1 ->
        x `notin` fv_dexp ee2 ->
@@ -46,6 +47,19 @@ Proof.
 Qed.
 
 
+Lemma disjoint_completeness : forall A B,
+    icfpDisjoint A B -> disjointSpec A B.
+Proof.
+  intros A B H. apply disjoint_eqv.
+  induction~ H.
+  (* H: icfpDisjointAx A B *)
+  induction~ H.
+  (* symm case *)
+  apply disjoint_eqv.
+  applys~ disjoint_symmetric.
+  apply~ disjoint_eqv.
+Qed.
+
 (* completeness of typing with respect to the type system in ICFP 2016 *)
 Theorem typing_completeness : forall G ee A e,
     ITyping G ee A e -> Etyping G e A /\ |e| = ee.
@@ -55,7 +69,7 @@ Proof with auto.
   -
     split.
     eapply Etyp_abs.
-    intros. 
+    intros.
     forwards* [? ?]: H1 H2.
     auto_sub.
     auto_sub.
@@ -73,6 +87,7 @@ Proof with auto.
     simpl.
     congruence.
   -
+    apply disjoint_completeness in H.
     lets [HT1 Era1]: IHTyp1.
     lets [HT2 Era2]: IHTyp2.
     simpl.

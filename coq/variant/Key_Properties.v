@@ -85,8 +85,8 @@ Proof.
       intros H0.
       inverts H0.
       auto.
-Qed.   
-        
+Qed.
+
 (* disjoint *)
 
 Lemma disjoint_eqv: forall A B,
@@ -153,14 +153,14 @@ Proof.
       *
         inverts S2;
         forwards*: IHB1.
-      * 
-      assert (T1 : sub (t_and B1 B2) C1) by auto_sub. 
+      *
+      assert (T1 : sub (t_and B1 B2) C1) by auto_sub.
       forwards*: IHC1 T1.
       assert (T2 : sub (t_and B1 B2) C2) by auto_sub.
       forwards*: IHC2 T2.
 Qed.
 
-    
+
 Lemma disjoint_domain_type: forall A B C B',
     disjointSpec (t_arrow B C) A -> disjointSpec (t_arrow B' C) A.
 Proof.
@@ -170,7 +170,7 @@ Proof.
   induction* A;
     invert* H.
 Qed.
-  
+
 
 Lemma disjoint_and: forall A B C,
     disjointSpec (t_and B C) A <-> disjointSpec B A /\ disjointSpec C A.
@@ -206,7 +206,7 @@ Fixpoint principal_type (v:value) : typ :=
   | v_top => t_top
   | (v_topv _) => t_top
   | (v_lit i5) => t_int
-  | (v_absv e A B) => t_arrow A B
+  | (v_absv A e B) => t_arrow A B
   | (v_merge v1 v2) => t_and (principal_type v1) (principal_type v2)
   end.
 
@@ -238,7 +238,7 @@ Qed.
 
 
 Lemma absv_typing_principal : forall A B D e,
-    Vtyping (v_absv e A D) B -> Vtyping (v_absv e A D) (t_arrow A D).
+    Vtyping (v_absv A e D) B -> Vtyping (v_absv A e D) (t_arrow A D).
 Proof.
   intros A B D e H.
   inverts H.
@@ -281,7 +281,7 @@ Qed.
 (* changes. abs doesn't have unique type now *)
 Lemma TypedReduce_sub: forall v v' A,
     TypedReduce v A v' -> sub (principal_type v) A.
-Proof. 
+Proof.
   introv Red.
   induction Red;
     simple;

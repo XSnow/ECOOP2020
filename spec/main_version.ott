@@ -25,7 +25,7 @@ exp, e {{ tex e }}, v {{ tex v }}, one_e {{ tex 1 }}, two_e {{ tex 2 }} :: 'e_' 
   | \ x : A . e : B
                    ::  :: abs     (+ bind x in e +)
                                   {{ com abstractions }}
-	                          {{ tex [[\]][[x]][[:]][[A]].\,[[e]][[:]][[D]] }}
+	                          {{ tex [[\]][[x]][[:]][[A]].\,[[e]][[:]][[B]] }}
   | fix x . e : A  ::  :: fixpoint
                                   (+ bind x in e +)
                                   {{ com fixpoint }}
@@ -383,18 +383,6 @@ e : A  -->   e' : A
 
 -----------------------------------------------------  :: fix
 fix x . e : A  -->   e [ x ~> fix x . e : A ]
-
-
-embed
-{{ coq
-
-Definition disjointSpec A B :=
-  forall C, sub A C -> sub B C -> topLike C.
-  
-Definition consistencySpec v1 v2 :=
-  forall A v1' v2', TypedReduce v1 A v1' -> TypedReduce v2 A v2' -> v1' = v2'.
-}}
-
 
 
 defns
