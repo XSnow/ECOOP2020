@@ -13,11 +13,14 @@
 *.v.d
 *.vio
 *.vo
+*.vok
+*.vos
 *.v-e
 *.tex-old
 .history
 .bak
 CoqSrc.mk
 CoqSrc.mk.conf
+.CoqSrc.mk.d
 .coqdeps.d
 _CoqProject
