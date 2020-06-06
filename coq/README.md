@@ -1,4 +1,4 @@
-# Coq Formalization Artifact
+# Coq Formalization
 A Type-Directed Operational Semantics for a Calculus with a Merge Operator
 
 ## Building Instructions
@@ -62,18 +62,16 @@ Then `make` can reproduce the code (with Ott and LNgen installed).
 - The structures of both directories are almost the same, except
 `main_version/icfp_bidirectional.v`.
 It extends the bidirectional type system of lambdai by a fixpoint rule, and uses
-the same defnition of disjointness like our system.
-In it a different comleteness theorem is proved.
-This proof is added during rebuttal.
-Therefore the theorem is not in the accepted version of paper.
+the same definition of disjointness like our system.
+In it a different completeness theorem is proved.
 
 - `syntax_ott.v` contains the locally nameless definitions of the calculi and Dunfield's calculus.
 It involves the typing and semantics of the calculi, the semantics of Dunfield's calculus, and the typing of
-lambdai (icfp2016). One unified definition of type is used. The last two share a same set of expressions (dexp).
+lambdai (icfp2016). One unified definition of type is used. The last two share the same set of expressions (dexp).
 - `rules_inf.v` and `rules_inf2.v` contains the `lngen` generated code.
 - `Infrastructure.v` contains the type systems of the calculi and some lemmas.
 - `Subtyping_inversion.v` contains some properties of the subtyping relation.
-- `Key_properties.v` constains some necessary lemmas about typed reduction, top-like relatin and disjointness.
+- `Key_properties.v` constains some necessary lemmas about typed reduction, top-like relation and disjointness.
 - `Deterministic.v` contains the proofs of the determinism property.
 - `Type_Safety.v` contains the proofs of the type preservation and progress properties.
 - `dunfield.v` contains the proofs of the soundness theorem with respect to Dunfield's calculus.

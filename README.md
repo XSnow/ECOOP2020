@@ -1,25 +1,21 @@
-# ECOOP2020 Artifacts
-
-A Type-Directed Operational Semantics
-
-For a Calculus with a Merge Operator
+# ECOOP2020 A Type-Directed Operational Semantics for a Calculus with a Merge Operator (Artifact)
 
 - [coq/](./coq) for Coq formalization of the calculus
 - [spec/](./spec) for ott specification of the calculus
-- [paper.pdf](./paper.pdf) for the accepted version of paper with appendices
+- [paper.pdf](./paper.pdf) for the camera-ready version of paper with appendices
+
+The instructions and documentation about the Coq code can be found in the coq directory.
+
+## Use Docker to get it
 
 You can also use Docker to get and run the container including the artifact and dependencies by
-executing the following command in you machine with Docker installed:
+executing the following command in your machine with Docker installed:
 
    ```sh
    docker run -it sxsnow/ecoop2020
    ```
    
-Ott, LNgen and vim have been set up in the docker image sxsnow/ecoop2020:ott. You can run the following line to create a container by it.
-
-   ```sh
-   docker run -it --name ecoop-new sxsnow/ecoop2020:ott
-   ```
+Ott, LNgen and vim have been set up in the docker image.
    
 In coq/main_version or coq/variant directory, run
 
