@@ -17,7 +17,7 @@ executing the following command in your machine with Docker installed:
    
 Ott, LNgen and vim have been set up in the docker image.
    
-In [coq/main_version](./coq/main_version) or [coq/variant](./coq/main_version) directory,
+In [coq/main_version](./coq/main_version) or [coq/variant](./coq/variant) directory,
 run `make` to build and compile the proofs.
 
 You can also run
