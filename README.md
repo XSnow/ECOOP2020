@@ -15,7 +15,7 @@ executing the following command in your machine with Docker installed:
    docker run -it sxsnow/ecoop2020
    ```
    
-Ott, LNgen and vim have been set up in the docker image.
+Ott, LNgen and Vim have been set up in the docker image. The password for `sudo` is `ecoop2020`.
    
 In [coq/main_version](./coq/main_version) or [coq/variant](./coq/variant) directory,
 run `make` to build and compile the proofs.
