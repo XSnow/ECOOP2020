@@ -6,6 +6,18 @@
 
 The instructions and documentation about the Coq code can be found in the [coq](./coq) directory.
 
+
+## For more information
+
+- A 15-minute conference video can be found [here](https://youtu.be/LGqrXowiSC8).
+
+- A 3-minute poster video can be found [here](https://youtu.be/QFE7kiFXw54).
+
+- Our paper and its BibTex entry can be found on [DROPS](https://drops.dagstuhl.de/opus/volltexte/2020/13183/).
+
+- The artifact and its document can be also found on [DROPS](https://drops.dagstuhl.de/opus/volltexte/2020/13206/).
+
+
 ## Use Docker to get and run it
 
 You can also use Docker to get and run the container including the artifact and dependencies by
